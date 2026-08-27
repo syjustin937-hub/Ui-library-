@@ -3390,22 +3390,16 @@ end
                 AutoButtonColor = false,
                 Name = "\0",
                 BorderSizePixel = 0,
-                Size = UDim2New(1, 0, 0, 30),
+                Size = UDim2New(1, 0, 0, 20),
                 ZIndex = 4,
-                TextSize = 13,
+                TextSize = 12,
                 BackgroundColor3 = FromRGB(38, 38, 43)
             })  Items["Button"]:AddToTheme({BackgroundColor3 = "Element", TextColor3 = "Text"})
 
             Instances:Create("UICorner", {
                 Parent = Items["Button"].Instance,
-                CornerRadius = UDimNew(0, 6)
+                CornerRadius = UDimNew(0, 4)
             })
-
-            Items["UIStroke"] = Instances:Create("UIStroke", {
-                Parent = Items["Button"].Instance,
-                Color = FromRGB(45, 45, 51),
-                ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-            })  Items["UIStroke"]:AddToTheme({Color = "Border"})
         end
 
         function Button:Press()
@@ -3460,36 +3454,26 @@ end
                     Position = UDim2New(1, 0, 0, 0),
                     Size = UDim2New(0.48, 1, 0, 20),
                     ZIndex = 4,
-                    TextSize = 14,
+                    TextSize = 12,
                     BackgroundColor3 = FromRGB(11, 11, 11)
                 })  SubItems["SubButton"]:AddToTheme({BackgroundColor3 = "Element", TextColor3 = "Text"})
 
                 Instances:Create("UICorner", {
                     Parent = SubItems["SubButton"].Instance,
-                    CornerRadius = UDimNew(0, 5)
-                }) 
-
-                SubItems["UIStroke"] = Instances:Create("UIStroke", {
-                    Parent = SubItems["SubButton"].Instance,
-                    Color = FromRGB(24, 24, 24),
-                    ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                    CornerRadius = UDimNew(0, 4)
                 }) 
             end
 
             function SubButton:Press()
                 SubItems["SubButton"]:ChangeItemTheme({BackgroundColor3 = "Accent"})
-                SubItems["UIStroke"]:ChangeItemTheme({Color = "Light Accent"})
 
                 SubItems["SubButton"]:Tween(nil, {BackgroundColor3 = Library.Theme.Accent})
-                SubItems["UIStroke"]:Tween(nil, {Color = Library.Theme["Light Accent"]})
 
                 task.wait(0.1)
 
                 SubItems["SubButton"]:ChangeItemTheme({BackgroundColor3 = "Element"})
-                SubItems["UIStroke"]:ChangeItemTheme({Color = "Border"})
 
                 SubItems["SubButton"]:Tween(nil, {BackgroundColor3 = Library.Theme.Element})
-                SubItems["UIStroke"]:Tween(nil, {Color = Library.Theme.Border})
 
                 Library:SafeCall(SubButton.Callback)
             end
@@ -3769,7 +3753,7 @@ end
                 Parent = Dropdown.Section.Items["Content"].Instance,
                 Name = "\0",
                 BackgroundTransparency = 1,
-                Size = UDim2New(1, 0, 0, 52),
+                Size = UDim2New(1, 0, 0, 34),
                 BorderColor3 = FromRGB(0, 0, 0),
                 ZIndex = 4,
                 BorderSizePixel = 0,
@@ -3786,9 +3770,9 @@ end
                 BorderSizePixel = 0,
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
-                Size = UDim2New(1, 0, 0, 14),
+                Size = UDim2New(1, 0, 0, 12),
                 ZIndex = 4,
-                TextSize = 12,
+                TextSize = 11,
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Text"]:AddToTheme({TextColor3 = "Muted"})
 
@@ -3851,7 +3835,7 @@ end
                 AnchorPoint = Vector2New(0, 1),
                 Name = "\0",
                 Position = UDim2New(0, 0, 1, 0),
-                Size = UDim2New(1, 0, 0, 28),
+                Size = UDim2New(1, 0, 0, 20),
                 ZIndex = 4,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(38, 38, 43)
@@ -3859,14 +3843,8 @@ end
 
             Instances:Create("UICorner", {
                 Parent = Items["RealDropdown"].Instance,
-                CornerRadius = UDimNew(0, 5)
+                CornerRadius = UDimNew(0, 4)
             })
-
-            Items["Outline"] = Instances:Create("UIStroke", {
-                Parent = Items["RealDropdown"].Instance,
-                Color = FromRGB(45, 45, 51),
-                ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-            })  Items["Outline"]:AddToTheme({Color = "Border"})
 
             Items["Value"] = Instances:Create("TextLabel", {
                 Parent = Items["RealDropdown"].Instance,
@@ -3876,13 +3854,13 @@ end
                 Text = "None",
                 Name = "\0",
                 TextTruncate = Enum.TextTruncate.AtEnd,
-                Size = UDim2New(1, -34, 1, 0),
-                Position = UDim2New(0, 10, 0, 0),
+                Size = UDim2New(1, -28, 1, 0),
+                Position = UDim2New(0, 8, 0, 0),
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 BorderSizePixel = 0,
                 ZIndex = 4,
-                TextSize = 13,
+                TextSize = 12,
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Value"]:AddToTheme({TextColor3 = "Text"})
 
@@ -3892,13 +3870,13 @@ end
                 ScaleType = Enum.ScaleType.Fit,
                 BorderColor3 = FromRGB(0, 0, 0),
                 Name = "\0",
-                Size = UDim2New(0, 9, 0, 9),
+                Size = UDim2New(0, 8, 0, 8),
                 AnchorPoint = Vector2New(1, 0.5),
                 Image = OpenIconData.Image,
                 ImageRectOffset = OpenIconData.RectOffset,
                 ImageRectSize = OpenIconData.RectSize,
                 BackgroundTransparency = 1,
-                Position = UDim2New(1, -10, 0.5, 0),
+                Position = UDim2New(1, -8, 0.5, 0),
                 ZIndex = 4,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
@@ -4002,7 +3980,7 @@ end
                 Count += 1
             end
 
-            Items["OptionHolder"].Instance.Size = UDim2New(1, 0, 0, MathClamp((Count * 27) + 7, 37, Dropdown.MaxSize))
+            Items["OptionHolder"].Instance.Size = UDim2New(1, 0, 0, MathClamp((Count * 23) + 7, 33, Dropdown.MaxSize))
         end
 
         function Dropdown:Remove(Option)
@@ -4035,12 +4013,12 @@ end
                 Name = "\0",
                 AutoButtonColor = false,
                 BorderColor3 = FromRGB(0, 0, 0),
-                Size = UDim2New(1, -5, 0, 24),
+                Size = UDim2New(1, -5, 0, 20),
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 BorderSizePixel = 0,
                 ZIndex = 25,
-                TextSize = 13,
+                TextSize = 12,
                 BackgroundColor3 = FromRGB(38, 38, 43)
             })  OptionButton:AddToTheme({TextColor3 = "Text", BackgroundColor3 = "Element"})
 
