@@ -3581,6 +3581,7 @@ end
             BorderColor3 = FromRGB(0, 0, 0),
             ZIndex = 4,
             BorderSizePixel = 0,
+            BackgroundTransparency = 1,
             BackgroundColor3 = FromRGB(38, 38, 43)
         })  Items["Chip"]:AddToTheme({BackgroundColor3 = "Element"})
 
