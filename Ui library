@@ -2793,7 +2793,7 @@ end
             Value = false,
 
             Count = 0,
-            Reserved = 42
+            Reserved = 38
         }
 
         local Items = { } do
@@ -2819,7 +2819,7 @@ end
                 AnchorPoint = Vector2New(1, 0.5),
                 Name = "\0",
                 Position = UDim2New(1, 0, 0.5, 0),
-                Size = UDim2New(0, 34, 0, 18),
+                Size = UDim2New(0, 30, 0, 16),
                 ZIndex = 5,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(38, 38, 43)
@@ -2843,7 +2843,7 @@ end
                 Name = "\0",
                 AnchorPoint = Vector2New(0, 0.5),
                 Position = UDim2New(0, 3, 0.5, 0),
-                Size = UDim2New(0, 12, 0, 12),
+                Size = UDim2New(0, 10, 0, 10),
                 ZIndex = 6,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(126, 126, 137)
@@ -2877,7 +2877,7 @@ end
         end
 
         function Toggle:FitText()
-            Items["Text"].Instance.Size = UDim2New(1, -MathClamp(Toggle.Reserved, 42, 400), 0, 15)
+            Items["Text"].Instance.Size = UDim2New(1, -MathClamp(Toggle.Reserved, 38, 400), 0, 15)
         end
 
         function Toggle:Get()
@@ -2901,7 +2901,7 @@ end
                 Items["Indicator"]:Tween(nil, {BackgroundColor3 = Library.Theme.Accent})
                 Items["Text"]:Tween(nil, {TextTransparency = 0})
                 Items["Check"]:Tween(nil, {
-                    Position = UDim2New(0, 19, 0.5, 0),
+                    Position = UDim2New(0, 17, 0.5, 0),
                     BackgroundColor3 = Library.Theme.Background
                 })
             else
@@ -3571,33 +3571,8 @@ end
             BackgroundColor3 = FromRGB(255, 255, 255)
         })  Items["Text"]:AddToTheme({TextColor3 = "Text"})
 
-        Items["Chip"] = Instances:Create("Frame", {
-            Parent = Items["Slider"].Instance,
-            Name = "\0",
-            AnchorPoint = Vector2New(1, 0),
-            Position = UDim2New(1, 0, 0, 0),
-            Size = UDim2New(0, 0, 0, 17),
-            AutomaticSize = Enum.AutomaticSize.X,
-            BorderColor3 = FromRGB(0, 0, 0),
-            ZIndex = 4,
-            BorderSizePixel = 0,
-            BackgroundTransparency = 1,
-            BackgroundColor3 = FromRGB(38, 38, 43)
-        })  Items["Chip"]:AddToTheme({BackgroundColor3 = "Element"})
-
-        Instances:Create("UICorner", {
-            Parent = Items["Chip"].Instance,
-            CornerRadius = UDimNew(0, 5)
-        })
-
-        Instances:Create("UIPadding", {
-            Parent = Items["Chip"].Instance,
-            PaddingLeft = UDimNew(0, 8),
-            PaddingRight = UDimNew(0, 8)
-        })
-
         Items["Value"] = Instances:Create("TextLabel", {
-            Parent = Items["Chip"].Instance,
+            Parent = Items["Slider"].Instance,
             FontFace = Library.Fonts.Medium,
             TextColor3 = FromRGB(255, 255, 255),
             BorderColor3 = FromRGB(0, 0, 0),
@@ -3606,8 +3581,10 @@ end
             BorderSizePixel = 0,
             BackgroundTransparency = 1,
             AutomaticSize = Enum.AutomaticSize.X,
-            Size = UDim2New(0, 0, 1, 0),
-            TextXAlignment = Enum.TextXAlignment.Center,
+            AnchorPoint = Vector2New(1, 0),
+            Position = UDim2New(1, 0, 0, 0),
+            Size = UDim2New(0, 0, 0, 15),
+            TextXAlignment = Enum.TextXAlignment.Right,
             ZIndex = 4,
             TextSize = 12,
             BackgroundColor3 = FromRGB(255, 255, 255)
@@ -3651,7 +3628,7 @@ end
             AnchorPoint = Vector2New(0.5, 0.5),
             Name = "\0",
             Position = UDim2New(1, 0, 0.5, 0),
-            Size = UDim2New(0, 13, 0, 13),
+            Size = UDim2New(0, 11, 0, 11),
             ZIndex = 6,
             BorderSizePixel = 0,
             BackgroundColor3 = FromRGB(255, 255, 255)
@@ -3661,13 +3638,6 @@ end
             Parent = Items["Drag"].Instance,
             CornerRadius = UDimNew(1, 0)
         })
-
-        Items["DragOutline"] = Instances:Create("UIStroke", {
-            Parent = Items["Drag"].Instance,
-            Thickness = 3,
-            Color = FromRGB(25, 25, 28),
-            ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        })  Items["DragOutline"]:AddToTheme({Color = "Section"})
 
         Items["Hit"] = Instances:Create("TextButton", {
             Parent = Items["Slider"].Instance,
@@ -3881,7 +3851,7 @@ end
                 AnchorPoint = Vector2New(0, 1),
                 Name = "\0",
                 Position = UDim2New(0, 0, 1, 0),
-                Size = UDim2New(1, 0, 0, 30),
+                Size = UDim2New(1, 0, 0, 28),
                 ZIndex = 4,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(38, 38, 43)
@@ -3889,7 +3859,7 @@ end
 
             Instances:Create("UICorner", {
                 Parent = Items["RealDropdown"].Instance,
-                CornerRadius = UDimNew(0, 6)
+                CornerRadius = UDimNew(0, 5)
             })
 
             Items["Outline"] = Instances:Create("UIStroke", {
@@ -3906,8 +3876,8 @@ end
                 Text = "None",
                 Name = "\0",
                 TextTruncate = Enum.TextTruncate.AtEnd,
-                Size = UDim2New(1, -38, 1, 0),
-                Position = UDim2New(0, 11, 0, 0),
+                Size = UDim2New(1, -34, 1, 0),
+                Position = UDim2New(0, 10, 0, 0),
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 BorderSizePixel = 0,
@@ -3922,13 +3892,13 @@ end
                 ScaleType = Enum.ScaleType.Fit,
                 BorderColor3 = FromRGB(0, 0, 0),
                 Name = "\0",
-                Size = UDim2New(0, 11, 0, 11),
+                Size = UDim2New(0, 9, 0, 9),
                 AnchorPoint = Vector2New(1, 0.5),
                 Image = OpenIconData.Image,
                 ImageRectOffset = OpenIconData.RectOffset,
                 ImageRectSize = OpenIconData.RectSize,
                 BackgroundTransparency = 1,
-                Position = UDim2New(1, -11, 0.5, 0),
+                Position = UDim2New(1, -10, 0.5, 0),
                 ZIndex = 4,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
