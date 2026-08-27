@@ -411,113 +411,89 @@ local Library do
     
     
     
-    Library.VectorIcons = {
-        ["skull"] = {
-            { 3, 2, 18, 19, 7, true },
-            { 7, 9, 5, 5, "full", false },
-            { 12.5, 9, 5, 5, "full", false },
-            { 9.5, 17, 1.5, 4, 0.5, false },
-            { 13, 17, 1.5, 4, 0.5, false },
-        },
-        ["user"] = {
-            { 8, 3, 8, 8, "full", true },
-            { 4, 13.5, 16, 14, 7, true },
-        },
-        ["eye"] = {
-            { 2, 6, 20, 12, 6, true },
-            { 9, 9, 6, 6, "full", true },
-        },
-        ["globe"] = {
-            { 2, 2, 20, 20, "full", true },
-            { 8, 2, 8, 20, 4, true },
-            { 2, 11.4, 20, 1.2, 0, false },
-        },
-        ["save"] = {
-            { 3, 3, 18, 18, 2, true },
-            { 8, 3, 8, 6, 0.5, true },
-            { 7, 14, 10, 7, 0.5, true },
-        },
-        ["crosshair"] = {
-            { 3, 3, 18, 18, "full", true },
-            { 11.4, 0, 1.2, 5, 0, false },
-            { 11.4, 19, 1.2, 5, 0, false },
-            { 0, 11.4, 5, 1.2, 0, false },
-            { 19, 11.4, 5, 1.2, 0, false },
-        },
-        ["target"] = {
-            { 2, 2, 20, 20, "full", true },
-            { 6.5, 6.5, 11, 11, "full", true },
-            { 10.5, 10.5, 3, 3, "full", false },
-        },
-        ["sliders"] = {
-            { 3, 5.5, 18, 1.2, 0, false },
-            { 14, 3.4, 4.5, 4.5, "full", false },
-            { 3, 11.4, 18, 1.2, 0, false },
-            { 6, 9.3, 4.5, 4.5, "full", false },
-            { 3, 17.3, 18, 1.2, 0, false },
-            { 15, 15.2, 4.5, 4.5, "full", false },
-        },
-        ["monitor"] = {
-            { 2, 3, 20, 14, 2, true },
-            { 11.4, 17, 1.2, 3, 0, false },
-            { 7.5, 20, 9, 1.2, 0.6, false },
-        },
-        ["lock"] = {
-            { 7, 4, 10, 12, 5, true, 0, { 7, 4, 10, 7 } },
-            { 3, 10.5, 18, 10.5, 2, true },
-        },
-        ["circle-dot"] = {
-            { 2, 2, 20, 20, "full", true },
-            { 9.5, 9.5, 5, 5, "full", false },
-        },
-        ["square"] = {
-            { 3, 3, 18, 18, 2, true },
-        },
-        ["folder"] = {
-            { 2, 6, 20, 14, 2, true },
-            { 2, 3.5, 9, 4, 1.5, false },
-        },
-        ["plus"] = {
-            { 11.1, 4, 1.8, 16, 0.9, false },
-            { 4, 11.1, 16, 1.8, 0.9, false },
-        },
-        ["x"] = {
-            { 4, 11.1, 16, 1.8, 0.9, false, 45 },
-            { 4, 11.1, 16, 1.8, 0.9, false, -45 },
-        },
-    }
+    local IconModule
+    pcall(function()
+        local Source = (game and game.HttpGet and game:HttpGet("https://raw.githubusercontent.com/DSP-V1/NextGen/refs/heads/main/UILib/icons/UIIcons.lua")) or HttpService:GetAsync("https://raw.githubusercontent.com/DSP-V1/NextGen/refs/heads/main/UILib/icons/UIIcons.lua")
+        IconModule = loadstring(Source)()
+    end)
 
     Library.IconSource = "https://raw.githubusercontent.com/frappedevs/lucideblox/master/icons/"
     Library.IconCache = { }
 
-    local UIIcons = loadstring((readfile and isfile and ((isfile("UILib/icons/UIIcons.luau") and readfile("UILib/icons/UIIcons.luau")) or (isfile("UIIcons.luau") and readfile("UIIcons.luau")) or (isfile("UILib/icons/UIIcons.lua") and readfile("UILib/icons/UIIcons.lua")) or (isfile("UIIcons.lua") and readfile("UIIcons.lua")))) or game:HttpGet("https://raw.githubusercontent.com/DSP-V1/NextGen/refs/heads/main/UILib/icons/UIIcons.lua"))()
-
-    Library.GetIcon = function(self, Icon, Type)
+    Library.GetIcon = function(self, Icon)
         Icon = tostring(Icon or "")
+
+        local Empty = { Image = "", RectOffset = Vector2New(0, 0), RectSize = Vector2New(0, 0) }
+
         if Icon == "" then
-            return { "", Vector2New(0, 0), Vector2New(0, 0) }
+            return Empty
         end
+
         if StringFind(Icon, "://") then
-            return { Icon, Vector2New(0, 0), Vector2New(0, 0) }
+            return { Image = Icon, RectOffset = Vector2New(0, 0), RectSize = Vector2New(0, 0) }
         end
+
         if StringFind(Icon, "^%d+$") then
-            return { "rbxassetid://" .. Icon, Vector2New(0, 0), Vector2New(0, 0) }
+            return { Image = "rbxassetid://" .. Icon, RectOffset = Vector2New(0, 0), RectSize = Vector2New(0, 0) }
         end
 
-        local Ok, Res = pcall(function()
-            return UIIcons.Icon2(Icon, Type)
-        end)
-
-        if Ok and type(Res) == "table" then
-            local Data = Res[2] or { }
-            return { Res[1], Data.ImageRectSize or Vector2New(0, 0), Data.ImageRectPosition or Vector2New(0, 0) }
+        if StringFind(Icon, "^rbxassetid://") then
+            return { Image = Icon, RectOffset = Vector2New(0, 0), RectSize = Vector2New(0, 0) }
         end
 
-        if Ok and type(Res) == "string" then
-            return { Res, Vector2New(0, 0), Vector2New(0, 0) }
+        if self.IconCache[Icon] then
+            return self.IconCache[Icon]
         end
 
-        return { self.Icons[Icon] or "", Vector2New(0, 0), Vector2New(0, 0) }
+        local IconData
+
+        if IconModule and IconModule.Icon2 then
+            local Ok, Resolved = pcall(IconModule.Icon2, Icon, nil, true)
+            if Ok and Resolved then
+                if type(Resolved) == "table" then
+                    local Meta = Resolved[2] or { }
+                    IconData = {
+                        Image = Resolved[1] or "",
+                        RectSize = Meta.ImageRectSize or Vector2New(0, 0),
+                        RectOffset = Meta.ImageRectPosition or Meta.ImageRectOffset or Vector2New(0, 0)
+                    }
+                elseif type(Resolved) == "string" then
+                    IconData = { Image = Resolved, RectOffset = Vector2New(0, 0), RectSize = Vector2New(0, 0) }
+                end
+            end
+        end
+
+        if not IconData then
+            local Result
+            local Path = self.Folders.Assets .. "/lucide_" .. Icon .. ".png"
+
+            if HasCustomAsset then
+                pcall(function()
+                    if not isfile(Path) then
+                        writefile(Path, game:HttpGet(self.IconSource .. Icon .. ".png"))
+                        task.wait()
+                    end
+
+                    Result = GetCustomAsset(Path)
+                end)
+            end
+
+            if not Result or Result == "" then
+                Result = self.Icons[Icon] or ""
+            end
+
+            IconData = { Image = Result, RectOffset = Vector2New(0, 0), RectSize = Vector2New(0, 0) }
+        end
+
+        self.IconCache[Icon] = IconData
+        return IconData
+    end
+
+    Library.SetIcon = function(self, ImageLabel, Icon)
+        local Data = self:GetIcon(Icon)
+        ImageLabel.Image = Data.Image
+        ImageLabel.ImageRectOffset = Data.RectOffset
+        ImageLabel.ImageRectSize = Data.RectSize
     end
 
     Library.SetMenuKeybind = function(self, Key)
@@ -793,7 +769,7 @@ local Library do
         local Family = "Angeli"
 
         local Sources = {
-            Book = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/InterBold.ttf",
+            Book = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/Inter.ttf",
             Heavy = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/InterBold.ttf"
         }
 
@@ -876,14 +852,14 @@ local Library do
         end
 
         Library.Fonts = {
-            Regular = CustomFont:Get("Regular"),
-            Medium = CustomFont:Get("Medium"),
-            SemiBold = CustomFont:Get("SemiBold"),
+            Regular = CustomFont:Get("Bold"),
+            Medium = CustomFont:Get("Bold"),
+            SemiBold = CustomFont:Get("Bold"),
             Bold = CustomFont:Get("Bold")
         }
 
-        Library.Font = Library.Fonts.Medium
-        Library.BoldFont = Library.Fonts.SemiBold
+        Library.Font = Library.Fonts.Bold
+        Library.BoldFont = Library.Fonts.Bold
     end
 
     
@@ -939,7 +915,8 @@ local Library do
         })
 
         local Fades = { }
-        local IconData = self:GetIcon(Name)
+        local Icon = self:GetIcon(Name)
+
         local Picture = Instances:Create("ImageLabel", {
             Parent = Holder.Instance,
             Name = "\0",
@@ -949,9 +926,9 @@ local Library do
             BorderSizePixel = 0,
             Size = UDim2New(1, 0, 1, 0),
             ZIndex = Depth,
-            Image = IconData[1],
-            ImageRectSize = IconData[2],
-            ImageRectOffset = IconData[3],
+            Image = Icon.Image,
+            ImageRectOffset = Icon.RectOffset,
+            ImageRectSize = Icon.RectSize,
             BackgroundColor3 = FromRGB(255, 255, 255)
         })  Picture:AddToTheme({ImageColor3 = "Image"})
 
@@ -2098,7 +2075,7 @@ end
                 Name = "\0",
                 BackgroundTransparency = 1,
                 Position = UDim2New(0, 0, 0, 46),
-                Size = UDim2New(0, 120, 1, -46),
+                Size = UDim2New(0, 132, 1, -46),
                 BorderColor3 = FromRGB(0, 0, 0),
                 ZIndex = 2,
                 BorderSizePixel = 0,
@@ -2113,9 +2090,9 @@ end
                 Name = "\0",
                 Size = UDim2New(0, 24, 0, 24),
                 AnchorPoint = Vector2New(1, 0.5),
-                Image = LogoIcon[1],
-                ImageRectSize = LogoIcon[2],
-                ImageRectOffset = LogoIcon[3],
+                Image = LogoIcon.Image,
+                ImageRectOffset = LogoIcon.RectOffset,
+                ImageRectSize = LogoIcon.RectSize,
                 BackgroundTransparency = 1,
                 Position = UDim2New(1, -16, 0.5, 0),
                 ZIndex = 3,
@@ -2183,8 +2160,8 @@ end
                 BorderColor3 = FromRGB(0, 0, 0),
                 Name = "\0",
                 BackgroundTransparency = 0,
-                Position = UDim2New(0, 121, 0, 46),
-                Size = UDim2New(1, -121, 1, -46),
+                Position = UDim2New(0, 133, 0, 46),
+                Size = UDim2New(1, -133, 1, -46),
                 ZIndex = 2,
                 ClipsDescendants = true,
                 BorderSizePixel = 0,
@@ -2257,9 +2234,9 @@ end
             BorderSizePixel = 0,
             BackgroundTransparency = 1,
             ScaleType = Enum.ScaleType.Fit,
-            Image = ToggleIconData[1],
-            ImageRectSize = ToggleIconData[2],
-            ImageRectOffset = ToggleIconData[3],
+            Image = ToggleIconData.Image,
+            ImageRectOffset = ToggleIconData.RectOffset,
+            ImageRectSize = ToggleIconData.RectSize,
             AnchorPoint = Vector2New(0.5, 0.5),
             Position = UDim2New(0.5, 0, 0.5, 0),
             Size = UDim2New(0.56, 0, 0.56, 0),
@@ -2305,10 +2282,10 @@ end
 
         function Window:SetIcon(Icon)
             Window.Icon = Icon
-            local NewIconData = Library:GetIcon(Icon)
-            ToggleIcon.Instance.Image = NewIconData[1]
-            ToggleIcon.Instance.ImageRectSize = NewIconData[2]
-            ToggleIcon.Instance.ImageRectOffset = NewIconData[3]
+            local Data = Library:GetIcon(Icon)
+            ToggleIcon.Instance.Image = Data.Image
+            ToggleIcon.Instance.ImageRectOffset = Data.RectOffset
+            ToggleIcon.Instance.ImageRectSize = Data.RectSize
         end
 
         function Window:SetButtonVisible(Bool)
@@ -2414,8 +2391,8 @@ end
                 BorderColor3 = FromRGB(0, 0, 0),
                 AnchorPoint = Vector2New(0, 0.5),
                 Name = "\0",
-                Position = UDim2New(0, 0, 0.5, 0),
-                Size = UDim2New(0, 3, 0, 14),
+                Position = UDim2New(0, -4, 0.5, 0),
+                Size = UDim2New(0, 3, 0, 16),
                 BackgroundTransparency = 1,
                 ZIndex = 3,
                 BorderSizePixel = 0,
@@ -2427,13 +2404,13 @@ end
                 CornerRadius = UDimNew(1, 0)
             }) 
 
-            local Built, Holder, Fades = pcall(Library.CreateIcon, Library, Items["Inactive"].Instance, Page.Icon, 14, 3)
+            local Built, Holder, Fades = pcall(Library.CreateIcon, Library, Items["Inactive"].Instance, Page.Icon, 15, 3)
 
             if Built and Holder then
                 Items["Icon"] = Holder
                 IconFades = Fades or { }
 
-                Holder.Instance.Position = UDim2New(0, 8, 0.5, 0)
+                Holder.Instance.Position = UDim2New(0, 10, 0.5, 0)
 
                 for Index, Fade in IconFades do
                     Fade[1].Instance[Fade[2]] = 0.45
@@ -2449,8 +2426,8 @@ end
                 Text = Page.Name,
                 Name = "\0",
                 AnchorPoint = Vector2New(0, 0.5),
-                Position = UDim2New(0, 28, 0.5, 0),
-                Size = UDim2New(1, -34, 0, 15),
+                Position = UDim2New(0, 33, 0.5, 0),
+                Size = UDim2New(1, -39, 0, 15),
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 TextTruncate = Enum.TextTruncate.AtEnd,
@@ -3041,9 +3018,9 @@ end
                     Name = "\0",
                     Size = UDim2New(0, 12, 0, 12),
                     AnchorPoint = Vector2New(0.5, 0.5),
-                    Image = KeyIconData[1],
-                    ImageRectSize = KeyIconData[2],
-                    ImageRectOffset = KeyIconData[3],
+                    Image = KeyIconData.Image,
+                    ImageRectOffset = KeyIconData.RectOffset,
+                    ImageRectSize = KeyIconData.RectSize,
                     BackgroundTransparency = 1,
                     Position = UDim2New(0.5, 0, 0.5, 0),
                     ZIndex = 6,
@@ -3946,9 +3923,9 @@ end
                 Name = "\0",
                 Size = UDim2New(0, 11, 0, 11),
                 AnchorPoint = Vector2New(1, 0.5),
-                Image = OpenIconData[1],
-                ImageRectSize = OpenIconData[2],
-                ImageRectOffset = OpenIconData[3],
+                Image = OpenIconData.Image,
+                ImageRectOffset = OpenIconData.RectOffset,
+                ImageRectSize = OpenIconData.RectSize,
                 BackgroundTransparency = 1,
                 Position = UDim2New(1, -11, 0.5, 0),
                 ZIndex = 4,
@@ -4373,11 +4350,11 @@ end
             Items["Picture"] = Instances:Create("ImageButton", {
                 Parent = Items["Image"].Instance,
                 AutoButtonColor = false,
-                Image = PictureIconData[1],
+                Image = PictureIconData.Image,
                 ImageTransparency = Image.Transparency,
                 ImageColor3 = Image.Color or FromRGB(255, 255, 255),
-                ImageRectOffset = Image.RectOffset or PictureIconData[3],
-                ImageRectSize = Image.RectSize or PictureIconData[2],
+                ImageRectOffset = Image.RectOffset or PictureIconData.RectOffset,
+                ImageRectSize = Image.RectSize or PictureIconData.RectSize,
                 ScaleType = Scale,
                 AnchorPoint = Vector2New(0, 1),
                 Position = UDim2New(0, 0, 1, 0),
@@ -4404,10 +4381,14 @@ end
 
         function Image:Set(Value)
             Image.Image = Value
-            local NewIconData = Library:GetIcon(Value)
-            Items["Picture"].Instance.Image = NewIconData[1]
-            Items["Picture"].Instance.ImageRectSize = Image.RectSize or NewIconData[2]
-            Items["Picture"].Instance.ImageRectOffset = Image.RectOffset or NewIconData[3]
+            local Data = Library:GetIcon(Value)
+            Items["Picture"].Instance.Image = Data.Image
+            if Image.RectOffset == nil then
+                Items["Picture"].Instance.ImageRectOffset = Data.RectOffset
+            end
+            if Image.RectSize == nil then
+                Items["Picture"].Instance.ImageRectSize = Data.RectSize
+            end
         end
 
         function Image:Get()
