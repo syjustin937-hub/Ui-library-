@@ -490,47 +490,34 @@ local Library do
     Library.IconSource = "https://raw.githubusercontent.com/frappedevs/lucideblox/master/icons/"
     Library.IconCache = { }
 
-    
-    Library.GetIcon = function(self, Icon)
+    local UIIcons = loadstring((readfile and isfile and ((isfile("UILib/icons/UIIcons.luau") and readfile("UILib/icons/UIIcons.luau")) or (isfile("UIIcons.luau") and readfile("UIIcons.luau")) or (isfile("UILib/icons/UIIcons.lua") and readfile("UILib/icons/UIIcons.lua")) or (isfile("UIIcons.lua") and readfile("UIIcons.lua")))) or game:HttpGet("https://raw.githubusercontent.com/DSP-V1/NextGen/refs/heads/main/UILib/icons/UIIcons.lua"))()
+
+    Library.GetIcon = function(self, Icon, Type)
         Icon = tostring(Icon or "")
-
         if Icon == "" then
-            return ""
+            return { "", Vector2New(0, 0), Vector2New(0, 0) }
         end
-
         if StringFind(Icon, "://") then
-            return Icon
+            return { Icon, Vector2New(0, 0), Vector2New(0, 0) }
         end
-
         if StringFind(Icon, "^%d+$") then
-            return "rbxassetid://" .. Icon
+            return { "rbxassetid://" .. Icon, Vector2New(0, 0), Vector2New(0, 0) }
         end
 
-        if self.IconCache[Icon] then
-            return self.IconCache[Icon]
+        local Ok, Res = pcall(function()
+            return UIIcons.Icon2(Icon, Type)
+        end)
+
+        if Ok and type(Res) == "table" then
+            local Data = Res[2] or { }
+            return { Res[1], Data.ImageRectSize or Vector2New(0, 0), Data.ImageRectPosition or Vector2New(0, 0) }
         end
 
-        local Result
-        local Path = self.Folders.Assets .. "/lucide_" .. Icon .. ".png"
-
-        if HasCustomAsset then
-            pcall(function()
-                if not isfile(Path) then
-                    writefile(Path, game:HttpGet(self.IconSource .. Icon .. ".png"))
-                    task.wait()
-                end
-
-                Result = GetCustomAsset(Path)
-            end)
+        if Ok and type(Res) == "string" then
+            return { Res, Vector2New(0, 0), Vector2New(0, 0) }
         end
 
-        
-        if not Result or Result == "" then
-            Result = self.Icons[Icon] or ""
-        end
-
-        self.IconCache[Icon] = Result
-        return Result
+        return { self.Icons[Icon] or "", Vector2New(0, 0), Vector2New(0, 0) }
     end
 
     Library.SetMenuKeybind = function(self, Key)
@@ -806,7 +793,7 @@ local Library do
         local Family = "Angeli"
 
         local Sources = {
-            Book = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/Inter.ttf",
+            Book = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/InterBold.ttf",
             Heavy = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/InterBold.ttf"
         }
 
@@ -952,94 +939,23 @@ local Library do
         })
 
         local Fades = { }
-        local Shape = self.VectorIcons[tostring(Name)]
+        local IconData = self:GetIcon(Name)
+        local Picture = Instances:Create("ImageLabel", {
+            Parent = Holder.Instance,
+            Name = "\0",
+            ScaleType = Enum.ScaleType.Fit,
+            BorderColor3 = FromRGB(0, 0, 0),
+            BackgroundTransparency = 1,
+            BorderSizePixel = 0,
+            Size = UDim2New(1, 0, 1, 0),
+            ZIndex = Depth,
+            Image = IconData[1],
+            ImageRectSize = IconData[2],
+            ImageRectOffset = IconData[3],
+            BackgroundColor3 = FromRGB(255, 255, 255)
+        })  Picture:AddToTheme({ImageColor3 = "Image"})
 
-        
-        if not Shape then
-            local Picture = Instances:Create("ImageLabel", {
-                Parent = Holder.Instance,
-                Name = "\0",
-                ScaleType = Enum.ScaleType.Fit,
-                BorderColor3 = FromRGB(0, 0, 0),
-                BackgroundTransparency = 1,
-                BorderSizePixel = 0,
-                Size = UDim2New(1, 0, 1, 0),
-                ZIndex = Depth,
-                Image = self:GetIcon(Name),
-                BackgroundColor3 = FromRGB(255, 255, 255)
-            })  Picture:AddToTheme({ImageColor3 = "Image"})
-
-            TableInsert(Fades, { Picture, "ImageTransparency" })
-            return Holder, Fades
-        end
-
-        local Unit = Size / 24
-
-        local Scale = function(Value)
-            return MathFloor(Value * Unit + 0.5)
-        end
-
-        local DrawPart = function(Part)
-            local X, Y, W, H, Radius, Stroke, Rotation, Clip = TableUnpack(Part, 1, 8)
-
-            local Target = Holder.Instance
-
-            if Clip then
-                Target = Instances:Create("Frame", {
-                    Parent = Holder.Instance,
-                    Name = "\0",
-                    BackgroundTransparency = 1,
-                    BorderColor3 = FromRGB(0, 0, 0),
-                    BorderSizePixel = 0,
-                    ClipsDescendants = true,
-                    Position = UDim2New(0, Scale(Clip[1]), 0, Scale(Clip[2])),
-                    Size = UDim2New(0, Scale(Clip[3]), 0, Scale(Clip[4])),
-                    ZIndex = Depth,
-                    BackgroundColor3 = FromRGB(255, 255, 255)
-                }).Instance
-
-                X, Y = X - Clip[1], Y - Clip[2]
-            end
-
-            local Item = Instances:Create("Frame", {
-                Parent = Target,
-                Name = "\0",
-                BorderColor3 = FromRGB(0, 0, 0),
-                BorderSizePixel = 0,
-                Rotation = Rotation or 0,
-                Position = UDim2New(0, Scale(X), 0, Scale(Y)),
-                Size = UDim2New(0, MathClamp(Scale(W), 1, Size * 3), 0, MathClamp(Scale(H), 1, Size * 3)),
-                BackgroundTransparency = Stroke and 1 or 0,
-                ZIndex = Depth,
-                BackgroundColor3 = FromRGB(255, 255, 255)
-            })
-
-            if Radius then
-                Instances:Create("UICorner", {
-                    Parent = Item.Instance,
-                    CornerRadius = Radius == "full" and UDimNew(1, 0) or UDimNew(0, MathClamp(Scale(Radius), 0, 64))
-                }) 
-            end
-
-            if Stroke then
-                local Outline = Instances:Create("UIStroke", {
-                    Parent = Item.Instance,
-                    Thickness = 1,
-                    Color = FromRGB(255, 255, 255),
-                    ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                })  Outline:AddToTheme({Color = "Image"})
-
-                TableInsert(Fades, { Outline, "Transparency" })
-            else
-                Item:AddToTheme({BackgroundColor3 = "Image"})
-                TableInsert(Fades, { Item, "BackgroundTransparency" })
-            end
-        end
-
-        for Index, Part in Shape do
-            pcall(DrawPart, Part)
-        end
-
+        TableInsert(Fades, { Picture, "ImageTransparency" })
         return Holder, Fades
     end
 
@@ -2182,13 +2098,14 @@ end
                 Name = "\0",
                 BackgroundTransparency = 1,
                 Position = UDim2New(0, 0, 0, 46),
-                Size = UDim2New(0, 132, 1, -46),
+                Size = UDim2New(0, 120, 1, -46),
                 BorderColor3 = FromRGB(0, 0, 0),
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
             }) 
 
+            local LogoIcon = Library:GetIcon(Window.Logo)
             Items["Logo"] = Instances:Create("ImageLabel", {
                 Parent = Items["Header"].Instance,
                 ScaleType = Enum.ScaleType.Fit,
@@ -2196,7 +2113,9 @@ end
                 Name = "\0",
                 Size = UDim2New(0, 24, 0, 24),
                 AnchorPoint = Vector2New(1, 0.5),
-                Image = Library:GetIcon(Window.Logo),
+                Image = LogoIcon[1],
+                ImageRectSize = LogoIcon[2],
+                ImageRectOffset = LogoIcon[3],
                 BackgroundTransparency = 1,
                 Position = UDim2New(1, -16, 0.5, 0),
                 ZIndex = 3,
@@ -2264,8 +2183,8 @@ end
                 BorderColor3 = FromRGB(0, 0, 0),
                 Name = "\0",
                 BackgroundTransparency = 0,
-                Position = UDim2New(0, 133, 0, 46),
-                Size = UDim2New(1, -133, 1, -46),
+                Position = UDim2New(0, 121, 0, 46),
+                Size = UDim2New(1, -121, 1, -46),
                 ZIndex = 2,
                 ClipsDescendants = true,
                 BorderSizePixel = 0,
@@ -2331,13 +2250,16 @@ end
             Color = FromRGB(38, 38, 38)
         })  ToggleStroke:AddToTheme({Color = "Border"})
 
+        local ToggleIconData = Library:GetIcon(Window.Icon)
         local ToggleIcon = Instances:Create("ImageLabel", {
             Parent = ToggleButton.Instance,
             Name = "LogoIcon",
             BorderSizePixel = 0,
             BackgroundTransparency = 1,
             ScaleType = Enum.ScaleType.Fit,
-            Image = Library:GetIcon(Window.Icon),
+            Image = ToggleIconData[1],
+            ImageRectSize = ToggleIconData[2],
+            ImageRectOffset = ToggleIconData[3],
             AnchorPoint = Vector2New(0.5, 0.5),
             Position = UDim2New(0.5, 0, 0.5, 0),
             Size = UDim2New(0.56, 0, 0.56, 0),
@@ -2383,7 +2305,10 @@ end
 
         function Window:SetIcon(Icon)
             Window.Icon = Icon
-            ToggleIcon.Instance.Image = Library:GetIcon(Icon)
+            local NewIconData = Library:GetIcon(Icon)
+            ToggleIcon.Instance.Image = NewIconData[1]
+            ToggleIcon.Instance.ImageRectSize = NewIconData[2]
+            ToggleIcon.Instance.ImageRectOffset = NewIconData[3]
         end
 
         function Window:SetButtonVisible(Bool)
@@ -2473,7 +2398,7 @@ end
                 Name = "\0",
                 LayoutOrder = Page.Window.LayoutIndex,
                 BackgroundTransparency = 1,
-                Size = UDim2New(1, 0, 0, 32),
+                Size = UDim2New(1, 0, 0, 28),
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(38, 38, 43)
@@ -2489,8 +2414,8 @@ end
                 BorderColor3 = FromRGB(0, 0, 0),
                 AnchorPoint = Vector2New(0, 0.5),
                 Name = "\0",
-                Position = UDim2New(0, -7, 0.5, 0),
-                Size = UDim2New(0, 3, 0, 16),
+                Position = UDim2New(0, 0, 0.5, 0),
+                Size = UDim2New(0, 3, 0, 14),
                 BackgroundTransparency = 1,
                 ZIndex = 3,
                 BorderSizePixel = 0,
@@ -2502,13 +2427,13 @@ end
                 CornerRadius = UDimNew(1, 0)
             }) 
 
-            local Built, Holder, Fades = pcall(Library.CreateIcon, Library, Items["Inactive"].Instance, Page.Icon, 15, 3)
+            local Built, Holder, Fades = pcall(Library.CreateIcon, Library, Items["Inactive"].Instance, Page.Icon, 14, 3)
 
             if Built and Holder then
                 Items["Icon"] = Holder
                 IconFades = Fades or { }
 
-                Holder.Instance.Position = UDim2New(0, 10, 0.5, 0)
+                Holder.Instance.Position = UDim2New(0, 8, 0.5, 0)
 
                 for Index, Fade in IconFades do
                     Fade[1].Instance[Fade[2]] = 0.45
@@ -2524,8 +2449,8 @@ end
                 Text = Page.Name,
                 Name = "\0",
                 AnchorPoint = Vector2New(0, 0.5),
-                Position = UDim2New(0, 33, 0.5, 0),
-                Size = UDim2New(1, -39, 0, 15),
+                Position = UDim2New(0, 28, 0.5, 0),
+                Size = UDim2New(1, -34, 0, 15),
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 TextTruncate = Enum.TextTruncate.AtEnd,
@@ -3108,6 +3033,7 @@ end
                     PaddingRight = UDimNew(0, 6)
                 }) 
 
+                local KeyIconData = Library:GetIcon("key")
                 SubItems["KeyIcon"] = Instances:Create("ImageLabel", {
                     Parent = SubItems["KeyButton"].Instance,
                     ScaleType = Enum.ScaleType.Fit,
@@ -3115,7 +3041,9 @@ end
                     Name = "\0",
                     Size = UDim2New(0, 12, 0, 12),
                     AnchorPoint = Vector2New(0.5, 0.5),
-                    Image = Library:GetIcon("key"),
+                    Image = KeyIconData[1],
+                    ImageRectSize = KeyIconData[2],
+                    ImageRectOffset = KeyIconData[3],
                     BackgroundTransparency = 1,
                     Position = UDim2New(0.5, 0, 0.5, 0),
                     ZIndex = 6,
@@ -4010,6 +3938,7 @@ end
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Value"]:AddToTheme({TextColor3 = "Text"})
 
+            local OpenIconData = Library:GetIcon("move-vertical")
             Items["OpenIcon"] = Instances:Create("ImageLabel", {
                 Parent = Items["RealDropdown"].Instance,
                 ScaleType = Enum.ScaleType.Fit,
@@ -4017,7 +3946,9 @@ end
                 Name = "\0",
                 Size = UDim2New(0, 11, 0, 11),
                 AnchorPoint = Vector2New(1, 0.5),
-                Image = Library:GetIcon("move-vertical"),
+                Image = OpenIconData[1],
+                ImageRectSize = OpenIconData[2],
+                ImageRectOffset = OpenIconData[3],
                 BackgroundTransparency = 1,
                 Position = UDim2New(1, -11, 0.5, 0),
                 ZIndex = 4,
@@ -4438,14 +4369,15 @@ end
                 })  Items["Text"]:AddToTheme({TextColor3 = "Muted"})
             end
 
+            local PictureIconData = Library:GetIcon(Image.Image)
             Items["Picture"] = Instances:Create("ImageButton", {
                 Parent = Items["Image"].Instance,
                 AutoButtonColor = false,
-                Image = Library:GetIcon(Image.Image),
+                Image = PictureIconData[1],
                 ImageTransparency = Image.Transparency,
                 ImageColor3 = Image.Color or FromRGB(255, 255, 255),
-                ImageRectOffset = Image.RectOffset,
-                ImageRectSize = Image.RectSize,
+                ImageRectOffset = Image.RectOffset or PictureIconData[3],
+                ImageRectSize = Image.RectSize or PictureIconData[2],
                 ScaleType = Scale,
                 AnchorPoint = Vector2New(0, 1),
                 Position = UDim2New(0, 0, 1, 0),
@@ -4472,7 +4404,10 @@ end
 
         function Image:Set(Value)
             Image.Image = Value
-            Items["Picture"].Instance.Image = Library:GetIcon(Value)
+            local NewIconData = Library:GetIcon(Value)
+            Items["Picture"].Instance.Image = NewIconData[1]
+            Items["Picture"].Instance.ImageRectSize = Image.RectSize or NewIconData[2]
+            Items["Picture"].Instance.ImageRectOffset = Image.RectOffset or NewIconData[3]
         end
 
         function Image:Get()
