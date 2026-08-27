@@ -3010,7 +3010,7 @@ end
                     PaddingRight = UDimNew(0, 6)
                 }) 
 
-                local KeyIconData = Library:GetIcon("key")
+                local KeyIconData = Library:GetIcon("database")
                 SubItems["KeyIcon"] = Instances:Create("ImageLabel", {
                     Parent = SubItems["KeyButton"].Instance,
                     ScaleType = Enum.ScaleType.Fit,
@@ -3099,6 +3099,8 @@ end
 
                     SubItems["KeyButton"]:ChangeItemTheme({TextColor3 = "Text"})
                     SubItems["KeyButton"]:Tween(nil, {TextColor3 = Library.Theme.Text})
+                    SubItems["KeyIcon"]:ChangeItemTheme({ImageColor3 = "Image"})
+                    SubItems["KeyIcon"]:Tween(nil, {ImageColor3 = Library.Theme.Image})
 
                     Library.Flags[Keybind.Flag] = {
                         Mode = Keybind.Mode,
@@ -3169,10 +3171,11 @@ end
                 local StartPicking = function()
                     Keybind.Picking = true
 
-                    SubItems["KeyIcon"].Instance.Visible = false
-                    SubItems["KeyButton"].Instance.Text = "..."
-                    SubItems["KeyButton"]:ChangeItemTheme({TextColor3 = "Muted"})
-                    SubItems["KeyButton"]:Tween(nil, {TextColor3 = Library.Theme.Muted, TextTransparency = 0})
+                    SubItems["KeyIcon"].Instance.Visible = true
+                    SubItems["KeyButton"].Instance.Text = ""
+                    SubItems["KeyButton"]:Tween(nil, {TextTransparency = 1})
+                    SubItems["KeyIcon"]:ChangeItemTheme({ImageColor3 = "Muted"})
+                    SubItems["KeyIcon"]:Tween(nil, {ImageColor3 = Library.Theme.Muted})
 
                     PickConnection = UserInputService.InputBegan:Connect(function(Input)
                         if Input.UserInputType == Enum.UserInputType.Touch then
