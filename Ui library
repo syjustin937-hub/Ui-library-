@@ -2349,7 +2349,7 @@ end
                     Name = "\0",
                     LayoutOrder = Page.Window.LayoutIndex,
                     BorderSizePixel = 0,
-                    Size = UDim2New(1, 0, 0, 28),
+                    Size = UDim2New(1, 0, 0, 22),
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     TextYAlignment = Enum.TextYAlignment.Bottom,
@@ -2361,7 +2361,7 @@ end
                 Instances:Create("UIPadding", {
                     Parent = Page.Window.Categories[Page.Category].Instance,
                     PaddingLeft = UDimNew(0, 6),
-                    PaddingBottom = UDimNew(0, 6)
+                    PaddingBottom = UDimNew(0, 2)
                 }) 
             end
 
