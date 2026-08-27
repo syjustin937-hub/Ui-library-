@@ -3004,7 +3004,7 @@ end
                     CornerRadius = UDimNew(0, 4)
                 }) 
 
-                Instances:Create("UIPadding", {
+                SubItems["KeyPadding"] = Instances:Create("UIPadding", {
                     Parent = SubItems["KeyButton"].Instance,
                     PaddingLeft = UDimNew(0, 6),
                     PaddingRight = UDimNew(0, 6)
@@ -3093,6 +3093,17 @@ end
                         SubItems["KeyButton"].Instance.Text = Unbound and "" or Keybind.Value
                         SubItems["KeyIcon"].Instance.Visible = Unbound
                         SubItems["KeyButton"]:Tween(nil, {TextTransparency = Unbound and 1 or 0})
+                        if Unbound then
+                            SubItems["KeyButton"].Instance.AutomaticSize = Enum.AutomaticSize.None
+                            SubItems["KeyButton"].Instance.Size = UDim2New(0, 24, 0, 16)
+                            SubItems["KeyPadding"].Instance.PaddingLeft = UDimNew(0, 0)
+                            SubItems["KeyPadding"].Instance.PaddingRight = UDimNew(0, 0)
+                        else
+                            SubItems["KeyButton"].Instance.AutomaticSize = Enum.AutomaticSize.X
+                            SubItems["KeyButton"].Instance.Size = UDim2New(0, 0, 0, 16)
+                            SubItems["KeyPadding"].Instance.PaddingLeft = UDimNew(0, 6)
+                            SubItems["KeyPadding"].Instance.PaddingRight = UDimNew(0, 6)
+                        end
                     end
 
                     Keybind.Picking = false
@@ -3174,6 +3185,10 @@ end
                     SubItems["KeyIcon"].Instance.Visible = true
                     SubItems["KeyButton"].Instance.Text = ""
                     SubItems["KeyButton"]:Tween(nil, {TextTransparency = 1})
+                    SubItems["KeyButton"].Instance.AutomaticSize = Enum.AutomaticSize.None
+                    SubItems["KeyButton"].Instance.Size = UDim2New(0, 24, 0, 16)
+                    SubItems["KeyPadding"].Instance.PaddingLeft = UDimNew(0, 0)
+                    SubItems["KeyPadding"].Instance.PaddingRight = UDimNew(0, 0)
                     SubItems["KeyIcon"]:ChangeItemTheme({ImageColor3 = "Muted"})
                     SubItems["KeyIcon"]:Tween(nil, {ImageColor3 = Library.Theme.Muted})
 
