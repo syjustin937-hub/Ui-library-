@@ -3089,11 +3089,12 @@ end
                         Keybind.Value = DisplayKey(Keybind.Key)
 
                         local Unbound = Keybind.Key == "None"
+                        local ShortKey = (not Unbound) and (type(Keybind.Value) == "string") and (#Keybind.Value <= 2)
 
                         SubItems["KeyButton"].Instance.Text = Unbound and "" or Keybind.Value
                         SubItems["KeyIcon"].Instance.Visible = Unbound
                         SubItems["KeyButton"]:Tween(nil, {TextTransparency = Unbound and 1 or 0})
-                        if Unbound then
+                        if Unbound or ShortKey then
                             SubItems["KeyButton"].Instance.AutomaticSize = Enum.AutomaticSize.None
                             SubItems["KeyButton"].Instance.Size = UDim2New(0, 24, 0, 16)
                             SubItems["KeyPadding"].Instance.PaddingLeft = UDimNew(0, 0)
