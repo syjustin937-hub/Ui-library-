@@ -3015,7 +3015,7 @@ end
 
                 Name = Data.Name or Data.name or "Keybind",
                 Flag = Data.Flag or Data.flag or Library:NextFlag(),
-                Default = Data.Default or Data.default or Enum.KeyCode.RightShift,
+                Default = Data.Default or Data.default,
                 Mode = Data.Mode or Data.mode or "Toggle",
                 Callback = Data.Callback or Data.callback or function() end,
 
@@ -4450,7 +4450,7 @@ end
 
             Name = Data.Name or Data.name or "Keybind",
             Flag = Data.Flag or Data.flag or Library:NextFlag(),
-            Default = Data.Default or Data.default or Enum.KeyCode.RightShift,
+            Default = Data.Default or Data.default,
             Callback = Data.Callback or Data.callback or function() end,
             Mode = Data.Mode or Data.mode or "Toggle",
 
