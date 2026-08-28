@@ -2637,6 +2637,7 @@ end
             Side = Data.Side or Data.side or "Left",
 
             Items = { },
+            IsOpen = true,
         }
 
         local Items = { } do
@@ -2674,6 +2675,24 @@ end
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Text"]:AddToTheme({TextColor3 = "Muted"})
 
+            Items["Toggle"] = Instances:Create("TextButton", {
+                Parent = Items["Section"].Instance,
+                FontFace = Library.Fonts.SemiBold,
+                TextColor3 = FromRGB(126, 126, 137),
+                BorderColor3 = FromRGB(0, 0, 0),
+                Text = "v",
+                AutoButtonColor = false,
+                Name = "\0",
+                BackgroundTransparency = 1,
+                BorderSizePixel = 0,
+                AnchorPoint = Vector2New(1, 0),
+                Position = UDim2New(1, -10, 0, 9),
+                Size = UDim2New(0, 16, 0, 16),
+                ZIndex = 5,
+                TextSize = 12,
+                BackgroundColor3 = FromRGB(255, 255, 255)
+            })  Items["Toggle"]:AddToTheme({TextColor3 = "Muted"})
+
             Items["Content"] = Instances:Create("Frame", {
                 Parent = Items["Section"].Instance,
                 BorderColor3 = FromRGB(0, 0, 0),
@@ -2706,6 +2725,34 @@ end
         function Section:SetVisibility(Bool)
            Items["Section"].Instance.Visible = Bool 
         end
+
+        local Open = Data.Open
+        if Open == nil then
+            Open = Data.open
+        end
+        if Open == nil then
+            Open = true
+        end
+        Section.IsOpen = Open
+
+        function Section:SetOpen(Bool)
+            Section.IsOpen = Bool
+            Items["Content"].Instance.Visible = Bool
+            Items["Toggle"].Instance.Rotation = Bool and 180 or 0
+            if Bool then
+                Items["Section"].Instance.AutomaticSize = Enum.AutomaticSize.Y
+                Items["Section"].Instance.Size = UDim2New(1, 0, 0, 43)
+            else
+                Items["Section"].Instance.AutomaticSize = Enum.AutomaticSize.None
+                Items["Section"].Instance.Size = UDim2New(1, 0, 0, 43)
+            end
+        end
+
+        Items["Toggle"]:Connect("MouseButton1Down", function()
+            Section:SetOpen(not Section.IsOpen)
+        end)
+
+        Section:SetOpen(Section.IsOpen)
 
         Section.Items = Items
 
