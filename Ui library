@@ -3323,8 +3323,10 @@ end
                     Keybind:Press(false)
                 end)
 
-                if Keybind.Default then
+                if Keybind.Default ~= nil then
                     Keybind:Set({Key = Keybind.Default, Mode = Keybind.Mode or "Toggle"})
+                else
+                    Keybind:Set("None")
                 end
 
                 Library.SetFlags[Keybind.Flag] = function(Value)
@@ -4719,8 +4721,10 @@ end
             Keybind:Press(false)
         end)
 
-        if Keybind.Default then
+        if Keybind.Default ~= nil then
             Keybind:Set({Key = Keybind.Default, Mode = Keybind.Mode or "Toggle"})
+        else
+            Keybind:Set("None")
         end
 
         Library.SetFlags[Keybind.Flag] = function(Value)
