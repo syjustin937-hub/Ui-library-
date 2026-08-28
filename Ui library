@@ -2740,11 +2740,15 @@ end
             Items["Content"].Instance.Visible = Bool
             Items["Toggle"].Instance.Rotation = Bool and 180 or 0
             if Bool then
+                Items["Text"].Instance.Position = UDim2New(0, 12, 0, 12)
+                Items["Toggle"].Instance.Position = UDim2New(1, -10, 0, 9)
                 Items["Section"].Instance.AutomaticSize = Enum.AutomaticSize.Y
                 Items["Section"].Instance.Size = UDim2New(1, 0, 0, 43)
             else
+                Items["Text"].Instance.Position = UDim2New(0, 12, 0, 10)
+                Items["Toggle"].Instance.Position = UDim2New(1, -10, 0, 8)
                 Items["Section"].Instance.AutomaticSize = Enum.AutomaticSize.None
-                Items["Section"].Instance.Size = UDim2New(1, 0, 0, 43)
+                Items["Section"].Instance.Size = UDim2New(1, 0, 0, 32)
             end
         end
 
